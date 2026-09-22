@@ -1,0 +1,25 @@
+return {
+  {
+    "folke/snacks.nvim",
+    opts = {
+      picker = {
+        sources = {
+          explorer = { auto_close = true },
+        },
+      },
+      image = {
+        -- image
+      },
+      dashboard = {
+        preset = {
+          pick = function(cmd, opts)
+            return LazyVim.pick(cmd, opts)()
+          end,
+          header = [[
+          -- My ASCII art here --⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+          ]],
+        },
+      },
+    },
+  },
+}
