@@ -1,6 +1,4 @@
-# Dotfiles
-
-My configuration files, for Mac OS.
+# Managing dotfiles using GNU Stow on my macOS
 
 ## Usage
 
