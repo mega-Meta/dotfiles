@@ -96,17 +96,21 @@ Later on, you can create a Git repository on your preferred version control plat
 
 # macOS 自動掃描家目錄（Home Directory）並將現有的設定檔轉換為符合 GNU Stow 格式的 .dotfiles 架構
 在 macOS 上，要自動掃描家目錄（Home Directory）並將現有的設定檔轉換為符合 GNU Stow 格式的 .dotfiles 架構，你可以利用一個聰明的技巧：使用 GNU Stow 的 --adopt（收養）模式搭配簡單的 Shell 腳本。這樣做最安全且省時，因為你不需要自己寫複雜的 mv 搬移邏輯。Stow 會自動幫你把家目錄現有的實體檔案「吸進」.dotfiles 資料夾中，並在原處建立符號連結（Symbolic Links）。以下是完整的自動化實作步驟：
-## 步驟一：建立 .dotfiles 目錄結構GNU Stow 是依據**子資料夾（套件包）**來決定對應結構的。首先，建立你想要管理的工具目錄（例如 zsh、git、config）：bashmkdir -p ~/.dotfiles/zsh ~/.dotfiles/git ~/.dotfiles/config/.config
-請謹慎使用程式碼。接著，在這些子資料夾中建立空白的目標檔案。這是因為 --adopt 必須在 .dotfiles 內看到同名檔案時，才會去「收養」家目錄下的實體檔案。bashtouch ~/.dotfiles/zsh/.zshrc
-touch ~/.dotfiles/git/.gitconfig
+## 步驟一：建立 .dotfiles 目錄結構GNU Stow 是依據**子資料夾（套件包）**來決定對應結構的。首先，建立你想要管理的工具目錄（例如 zsh、git、config）：
+    bash
+    mkdir -p ~/.dotfiles/zsh ~/.dotfiles/git ~/.dotfiles/config/.config
+接著，在這些子資料夾中建立空白的目標檔案。這是因為 --adopt 必須在 .dotfiles 內看到同名檔案時，才會去「收養」家目錄下的實體檔案。bashtouch ~/.dotfiles/zsh/.zshrc   
+    
+    touch ~/.dotfiles/git/.gitconfig
 # 如果你想管理整個 ~/.config/nvim 夾：
-mkdir -p ~/.dotfiles/config/.config/nvim
-請謹慎使用程式碼。
+    mkdir -p ~/.dotfiles/config/.config/nvim
+
 ## 步驟二：執行自動掃描與收養（--adopt）切換到你的 .dotfiles 目錄，並對指定的套件包執行 stow --adopt：bashcd ~/.dotfiles
 
-#讓 Stow 自動將家目錄的 .zshrc 和 .gitconfig 移入並建立連結
-stow --adopt zsh git config
-請謹慎使用程式碼。💡 這步發生了什麼事？Stow 發現 ~/.dotfiles/zsh/.zshrc 是空的，而 ~/.zshrc 有內容。它會自動把你的實體 ~/.zshrc 剪下並貼上到 ~/.dotfiles/zsh/.zshrc，然後在 ~/.zshrc 原處生成一個指向 .dotfiles 的軟連結。
+    #讓 Stow 自動將家目錄的 .zshrc 和 .gitconfig 移入並建立連結
+    stow --adopt zsh git config
+💡 這步發生了什麼事？Stow 發現 ~/.dotfiles/zsh/.zshrc 是空的，而 ~/.zshrc 有內容。它會自動把你的實體 ~/.zshrc 剪下並貼上到 ~/.dotfiles/zsh/.zshrc，然後在 ~/.zshrc 原處生成一個指向 .dotfiles 的軟連結。
+
 ## 步驟三：用一鍵腳本自動化（進階全自動掃描）如果你有大量的設定檔，不想手動一個個 touch 建立空檔案，可以使用以下這段 自動掃描與搬移腳本。它可以幫你掃描家目錄下常見的設定檔，自動建立 Stow 目錄並搬移：請在家目錄建立一個 migrate_dotfiles.sh，並貼上以下內容：bash#!/usr/bin/env bash
   
     # 定義你的 dotfiles 倉庫路徑
@@ -156,11 +160,15 @@ stow --adopt zsh git config
 
 
 如何執行：賦予執行權限：chmod +x migrate_dotfiles.sh執行腳本：./migrate_dotfiles.sh
+
 ## 步驟四：使用 Git 進行版本控制當 Stow 幫你把所有檔案集中到 .dotfiles 後，你就可以用 Git 將它上傳到 GitHub：bashcd ~/.dotfiles
-git init
-git add .
-git commit -m "feat: initial backup of macos dotfiles via stow"
-請謹慎使用程式碼。未來如果你換了新 Mac，只需要在新電腦上安裝好 stow，複製你的倉庫並一鍵還原：bashbrew install stow
-git clone <你的GitHub倉庫網址> ~/.dotfiles
-cd ~/.dotfiles
-stow *
+    git init
+    git add .
+    git commit -m "feat: initial backup of macos dotfiles via stow"
+
+未來如果你換了新 Mac，只需要在新電腦上安裝好 stow，複製你的倉庫並一鍵還原：
+      
+    bashbrew install stow
+    git clone <你的GitHub倉庫網址> ~/.dotfiles
+    cd ~/.dotfiles
+    stow *
