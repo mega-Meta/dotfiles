@@ -17,5 +17,5 @@ My configuration files, for Mac OS.
 
 0. [Using GNU Stow to manage your dotfiles - Brandon Invergo](http://brandon.invergo.net/news/2012-05-26-using-gnu-stow-to-manage-your-dotfiles.html)
 0. Some example dotfiles:
-  0. https://github.com/pedro-couto/dotfiles
   0. https://github.com/xero/dotfiles
+  1. https://github.com/omerxx/dotfiles
