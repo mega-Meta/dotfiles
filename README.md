@@ -93,3 +93,9 @@ $ git init && git branch -M main
 # commit your changes
 $ git add --all && git commit -m "stowed!"
 Later on, you can create a Git repository on your preferred version control platform (GitHub / GitLab) and add a remote to this local repository in order to backup the files.
+
+
+未來如果你換了新 Mac，只需要在新電腦上安裝好 stow，複製你的倉庫並一鍵還原：bashbrew install stow
+git clone <你的GitHub倉庫網址> ~/.dotfiles
+cd ~/.dotfiles
+stow *
