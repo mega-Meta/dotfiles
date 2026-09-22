@@ -1,0 +1,8 @@
+{
+  "trustedcasks": [
+    "b451c/quickmd/quickmd"
+  ],
+  "trustedtaps": [
+    "lzhgus/tap"
+  ]
+}
