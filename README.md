@@ -18,7 +18,7 @@ My configuration files, for Mac OS.
   0. https://github.com/xero/dotfiles
   1. https://github.com/omerxx/dotfiles
 
-Backstory
+##Backstory
 As part of my journey with various stacks and technologies, I've encountered a common challenge: managing numerous configuration scripts and "dotfiles" in my home directory. This can be frustrating, as we often find ourselves resorting to the cp and mv commands more frequently than necessary.
 
 Though I had my own personal dotfiles repository before, I essentially followed the conventional practice of "copy-paste," similar to many others. For instance, if I needed to update my .zshrc file for some reason, I would first update my configuration on GitHub using the following commands:
