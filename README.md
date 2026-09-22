@@ -1,4 +1,4 @@
-# Managing dotfiles using GNU Stow on my macOS
+# Managing dotfiles using GNU Stow on your macOS
 
 ## Usage
 
