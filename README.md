@@ -108,30 +108,30 @@ mkdir -p ~/.dotfiles/config/.config/nvim
 stow --adopt zsh git config
 請謹慎使用程式碼。💡 這步發生了什麼事？Stow 發現 ~/.dotfiles/zsh/.zshrc 是空的，而 ~/.zshrc 有內容。它會自動把你的實體 ~/.zshrc 剪下並貼上到 ~/.dotfiles/zsh/.zshrc，然後在 ~/.zshrc 原處生成一個指向 .dotfiles 的軟連結。
 ## 步驟三：用一鍵腳本自動化（進階全自動掃描）如果你有大量的設定檔，不想手動一個個 touch 建立空檔案，可以使用以下這段 自動掃描與搬移腳本。它可以幫你掃描家目錄下常見的設定檔，自動建立 Stow 目錄並搬移：請在家目錄建立一個 migrate_dotfiles.sh，並貼上以下內容：bash#!/usr/bin/env bash
+  
+    # 定義你的 dotfiles 倉庫路徑
+    DOTFILES_DIR="$HOME/.dotfiles"
+    mkdir -p "$DOTFILES_DIR"
 
-#定義你的 dotfiles 倉庫路徑
-DOTFILES_DIR="$HOME/.dotfiles"
-mkdir -p "$DOTFILES_DIR"
+    # 定義你想從家目錄自動掃描並轉移的檔案/資料夾清單
+    TARGETS=(
+            ".zshrc"
+            ".gitconfig"
+            ".p10k.zsh"
+            ".config/nvim"
+            ".config/kitty"
+        )
 
-#定義你想從家目錄自動掃描並轉移的檔案/資料夾清單
-TARGETS=(
-    ".zshrc"
-    ".gitconfig"
-    ".p10k.zsh"
-    ".config/nvim"
-    ".config/kitty"
-)
+    echo "🚀 開始自動掃描並轉換設定檔至 Stow 格式..."
 
-echo "🚀 開始自動掃描並轉換設定檔至 Stow 格式..."
-
-for item in "${TARGETS[@]}"; do
-    SRC="$HOME/$item"
+    for item in "${TARGETS[@]}"; do
+      SRC="$HOME/$item"
     
-    #檢查家目錄是否存在該檔案或資料夾，且目前還不是軟連結
+    # 檢查家目錄是否存在該檔案或資料夾，且目前還不是軟連結
     if [ -e "$SRC" ] && [ ! -L "$SRC" ]; then
         echo "Found: $item"
         
-        #根據是通用家目錄檔案還是 .config 內的檔案來決定分組
+        # 根據是通用家目錄檔案還是 .config 內的檔案來決定分組
         if [[ "$item" == .config/* ]]; then
             # 放入 config 套件包，並維持其內部目錄結構
             DEST_DIR="$DOTFILES_DIR/config/$(dirname "$item")"
@@ -145,14 +145,14 @@ for item in "${TARGETS[@]}"; do
             mv "$SRC" "$DOTFILES_DIR/$PKG_NAME/"
         fi
     fi
-done
+    done
 
-echo "🔗 正在透過 GNU Stow 重新建立全域符號連結..."
-cd "$DOTFILES_DIR" || exit
-# 執行 stow，將所有子資料夾（套件）連結回 $HOME
-stow -v *
+    echo "🔗 正在透過 GNU Stow 重新建立全域符號連結..."
+    cd "$DOTFILES_DIR" || exit
+    # 執行 stow，將所  有子資料夾（套件）連結回 $HOME
+    stow -v *
 
-echo "✅ 轉換完成！現在你的設定檔已由 Stow 統一管理。"
+    echo "✅ 轉換完成！現在你的設定檔已由 Stow 統一管理。"
 
 
 如何執行：賦予執行權限：chmod +x migrate_dotfiles.sh執行腳本：./migrate_dotfiles.sh
