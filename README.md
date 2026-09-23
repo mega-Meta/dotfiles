@@ -22,7 +22,7 @@ As part of my journey with various stacks and technologies, I've encountered a c
 Though I had my own personal dotfiles repository before, I essentially followed the conventional practice of "copy-paste," similar to many others. For instance, if I needed to update my .zshrc file for some reason, I would first update my configuration on GitHub using the following commands:
 
 ### # opening dotfiles folder
-$ cd ~/Developer/dotfiles
+$ cd ~/Developer/dotfiles 
 
 # modify the .zshrc file
 $ code .zshrc
@@ -94,81 +94,97 @@ $ git init && git branch -M main
 $ git add --all && git commit -m "stowed!"
 Later on, you can create a Git repository on your preferred version control platform (GitHub / GitLab) and add a remote to this local repository in order to backup the files.
 
-# macOS 自動掃描家目錄（Home Directory）並將現有的設定檔轉換為符合 GNU Stow 格式的 .dotfiles 架構
+## macOS 自動掃描家目錄（Home Directory）並將現有的設定檔轉換為符合 GNU Stow 格式的 .dotfiles 架構
 在 macOS 上，要自動掃描家目錄（Home Directory）並將現有的設定檔轉換為符合 GNU Stow 格式的 .dotfiles 架構，你可以利用一個聰明的技巧：使用 GNU Stow 的 --adopt（收養）模式搭配簡單的 Shell 腳本。這樣做最安全且省時，因為你不需要自己寫複雜的 mv 搬移邏輯。Stow 會自動幫你把家目錄現有的實體檔案「吸進」.dotfiles 資料夾中，並在原處建立符號連結（Symbolic Links）。以下是完整的自動化實作步驟：
-## 步驟一：建立 .dotfiles 目錄結構GNU Stow 是依據**子資料夾（套件包）**來決定對應結構的。首先，建立你想要管理的工具目錄（例如 zsh、git、config）：
-    bash
-    mkdir -p ~/.dotfiles/zsh ~/.dotfiles/git ~/.dotfiles/config/.config
-接著，在這些子資料夾中建立空白的目標檔案。這是因為 --adopt 必須在 .dotfiles 內看到同名檔案時，才會去「收養」家目錄下的實體檔案。bashtouch ~/.dotfiles/zsh/.zshrc   
-    
-    touch ~/.dotfiles/git/.gitconfig
-# 如果你想管理整個 ~/.config/nvim 夾：
-    mkdir -p ~/.dotfiles/config/.config/nvim
+### 步驟一：
+  建立 .dotfiles 目錄結構GNU Stow 是依據**子資料夾（套件包）**來決定對應結構的。首先，建立你想要管理的工具目錄（例如 zsh、git、config）：
+```
+bash
+mkdir -p ~/.dotfiles/zsh ~/.dotfiles/git ~/.dotfiles/config/.config
+```
+  接著，在這些子資料夾中建立空白的目標檔案。這是因為 --adopt 必須在 .dotfiles 內看到同名檔案時，才會去「收養」家目錄下的實體檔案。bashtouch ~/.dotfiles/zsh/.zshrc   
+```    
+touch ~/.dotfiles/git/.gitconfig
+```
+  #如果你想管理整個 ~/.config/nvim 夾：
+```
+mkdir -p ~/.dotfiles/config/.config/nvim
+```
 
-## 步驟二：執行自動掃描與收養（--adopt）切換到你的 .dotfiles 目錄，並對指定的套件包執行 stow --adopt：bashcd ~/.dotfiles
+### 步驟二：
+  執行自動掃描與收養（--adopt）切換到你的 .dotfiles 目錄，並對指定的套件包執行 stow --adopt：bashcd ~/.dotfiles
+```
+# 讓 Stow 自動將家目錄的 .zshrc 和 .gitconfig 移入並建立連結
+stow --adopt zsh git config
+```
+  💡 這步發生了什麼事？Stow 發現 ~/.dotfiles/zsh/.zshrc 是空的，而 ~/.zshrc 有內容。它會自動把你的實體 ~/.zshrc 剪下並貼上到 ~/.dotfiles/zsh/.zshrc，然後在 ~/.zshrc 原處生成一個指向 .dotfiles 的軟連結。
 
-    #讓 Stow 自動將家目錄的 .zshrc 和 .gitconfig 移入並建立連結
-    stow --adopt zsh git config
-💡 這步發生了什麼事？Stow 發現 ~/.dotfiles/zsh/.zshrc 是空的，而 ~/.zshrc 有內容。它會自動把你的實體 ~/.zshrc 剪下並貼上到 ~/.dotfiles/zsh/.zshrc，然後在 ~/.zshrc 原處生成一個指向 .dotfiles 的軟連結。
-
-## 步驟三：用一鍵腳本自動化（進階全自動掃描）如果你有大量的設定檔，不想手動一個個 touch 建立空檔案，可以使用以下這段 自動掃描與搬移腳本。它可以幫你掃描家目錄下常見的設定檔，自動建立 Stow 目錄並搬移：請在家目錄建立一個 migrate_dotfiles.sh，並貼上以下內容：bash#!/usr/bin/env bash
+### 步驟三：
+  用一鍵腳本自動化（進階全自動掃描）如果你有大量的設定檔，不想手動一個個 touch 建立空檔案，可以使用以下這段 自動掃描與搬移腳本。它可以幫你掃描家目錄下常見的設定檔，自動建立 Stow 目錄並搬移：請在家目錄建立一個 *$ ``` migrate_dotfiles.sh ``` $*，並貼上以下內容：
+```
+bash#!/usr/bin/env bash
   
-    # 定義你的 dotfiles 倉庫路徑
-    DOTFILES_DIR="$HOME/.dotfiles"
-    mkdir -p "$DOTFILES_DIR"
+# 定義你的 dotfiles 倉庫路徑
+DOTFILES_DIR="$HOME/.dotfiles"
+mkdir -p "$DOTFILES_DIR"
 
-    # 定義你想從家目錄自動掃描並轉移的檔案/資料夾清單
-    TARGETS=(
-            ".zshrc"
-            ".gitconfig"
-            ".p10k.zsh"
-            ".config/nvim"
-            ".config/kitty"
-        )
+# 定義你想從家目錄自動掃描並轉移的檔案/資料夾清單
+TARGETS=(
+        ".zshrc"
+        ".gitconfig"
+        ".p10k.zsh"
+        ".config/nvim"
+        ".config/kitty"
+    )
 
-    echo "🚀 開始自動掃描並轉換設定檔至 Stow 格式..."
+echo "🚀 開始自動掃描並轉換設定檔至 Stow 格式..."
 
-    for item in "${TARGETS[@]}"; do
-      SRC="$HOME/$item"
+for item in "${TARGETS[@]}"; do
+  SRC="$HOME/$item"
+
+# 檢查家目錄是否存在該檔案或資料夾，且目前還不是軟連結
+if [ -e "$SRC" ] && [ ! -L "$SRC" ]; then
+    echo "Found: $item"
     
-    # 檢查家目錄是否存在該檔案或資料夾，且目前還不是軟連結
-    if [ -e "$SRC" ] && [ ! -L "$SRC" ]; then
-        echo "Found: $item"
-        
-        # 根據是通用家目錄檔案還是 .config 內的檔案來決定分組
-        if [[ "$item" == .config/* ]]; then
-            # 放入 config 套件包，並維持其內部目錄結構
-            DEST_DIR="$DOTFILES_DIR/config/$(dirname "$item")"
-            mkdir -p "$DEST_DIR"
-            mv "$SRC" "$DEST_DIR/"
-        else
-            # 獨立打包，例如 .zshrc 放入 ~/.dotfiles/zsh/.zshrc
-            # 這裡去除點號作為資料夾名稱（.zshrc -> zsh）
-            PKG_NAME=$(echo "$item" | sed 's/^\.//')
-            mkdir -p "$DOTFILES_DIR/$PKG_NAME"
-            mv "$SRC" "$DOTFILES_DIR/$PKG_NAME/"
-        fi
+    # 根據是通用家目錄檔案還是 .config 內的檔案來決定分組
+    if [[ "$item" == .config/* ]]; then
+        # 放入 config 套件包，並維持其內部目錄結構
+        DEST_DIR="$DOTFILES_DIR/config/$(dirname "$item")"
+        mkdir -p "$DEST_DIR"
+        mv "$SRC" "$DEST_DIR/"
+    else
+        # 獨立打包，例如 .zshrc 放入 ~/.dotfiles/zsh/.zshrc
+        # 這裡去除點號作為資料夾名稱（.zshrc -> zsh）
+        PKG_NAME=$(echo "$item" | sed 's/^\.//')
+        mkdir -p "$DOTFILES_DIR/$PKG_NAME"
+        mv "$SRC" "$DOTFILES_DIR/$PKG_NAME/"
     fi
-    done
+fi
+done
 
-    echo "🔗 正在透過 GNU Stow 重新建立全域符號連結..."
-    cd "$DOTFILES_DIR" || exit
-    # 執行 stow，將所  有子資料夾（套件）連結回 $HOME
-    stow -v *
+echo "🔗 正在透過 GNU Stow 重新建立全域符號連結..."
+cd "$DOTFILES_DIR" || exit
+# 執行 stow，將所  有子資料夾（套件）連結回 $HOME
+stow -v *
 
-    echo "✅ 轉換完成！現在你的設定檔已由 Stow 統一管理。"
-
+echo "✅ 轉換完成！現在你的設定檔已由 Stow 統一管理。"
+```
 
 如何執行：賦予執行權限：chmod +x migrate_dotfiles.sh執行腳本：./migrate_dotfiles.sh
 
-## 步驟四：使用 Git 進行版本控制當 Stow 幫你把所有檔案集中到 .dotfiles 後，你就可以用 Git 將它上傳到 GitHub：bashcd ~/.dotfiles
-    git init
-    git add .
-    git commit -m "feat: initial backup of macos dotfiles via stow"
+## 步驟四：
+  使用 Git 進行版本控制當 Stow 幫你把所有檔案集中到 .dotfiles 後，你就可以用 Git 將它上傳到 GitHub：bashcd ~/.dotfiles
+```
+git init
+git add .
+git commit -m "feat: initial backup of macos dotfiles via stow"
+```
 
-未來如果你換了新 Mac，只需要在新電腦上安裝好 stow，複製你的倉庫並一鍵還原：
-      
-    bashbrew install stow
-    git clone <你的GitHub倉庫網址> ~/.dotfiles
-    cd ~/.dotfiles
-    stow *
+  未來如果你換了新 Mac，只需要在新電腦上安裝好 stow，複製你的倉庫並一鍵還原：
+```      
+bashbrew install stow
+git clone <你的GitHub倉庫網址> ~/.dotfiles
+cd ~/.dotfiles
+stow *
+```
+
