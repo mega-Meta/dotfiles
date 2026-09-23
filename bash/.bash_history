@@ -195,3 +195,4 @@ stow zsh
 eza -a --tree -L 2
 stow zsh
 eza -a --tree -L 2
+cat .zshrc
