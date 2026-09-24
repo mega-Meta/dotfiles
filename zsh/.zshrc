@@ -118,6 +118,18 @@ export HISTFILE="$HOME/.zsh_history"
 export HISTSIZE=10000
 export SAVEHIST=10000
 
+function clear_zsh_history { local HISTSIZE=0; }
+function gitall {
+    git add .
+    if [ "$1" != "" ]
+    then
+        git commit -m "$1"
+    else
+        git commit -m update
+    fi
+    git push
+}
+
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -172,3 +184,5 @@ export PHP_INI_SCAN_DIR="/Users/user/.config/herd-lite/bin:$PHP_INI_SCAN_DIR"
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 eval "$(starship init zsh)"
+
+[ ! -f "$HOME/.x-cmd.root/X" ] || . "$HOME/.x-cmd.root/X" # boot up x-cmd.
