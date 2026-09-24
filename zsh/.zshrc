@@ -114,6 +114,10 @@ plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
+export HISTFILE="$HOME/.zsh_history"
+export HISTSIZE=10000
+export SAVEHIST=10000
+
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -140,8 +144,27 @@ source $ZSH/oh-my-zsh.sh
 # For a full list of active aliases, run `alias`.
 #
 # Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
+alias zshconfig="mate ~/.zshrc"
+alias ohmyzsh="mate ~/.oh-my-zsh"
+
+# =========================================================
+# Modular Config Files
+# =========================================================
+
+# fzf configuration
+#source "$ZDOTDIR/fzf.zsh"
+
+# Aliases
+#source "$ZDOTDIR/aliases.zsh"
+
+# Custom keybindings
+#source "$ZDOTDIR/bindings.zsh"
+
+# Plugins and plugin manager
+#source "$ZDOTDIR/plugins.zsh"
+
+# Prompt/theme
+#source "$ZDOTDIR/prompt.zsh"
 export PATH="/Users/user/.config/herd-lite/bin:$PATH"
 export PHP_INI_SCAN_DIR="/Users/user/.config/herd-lite/bin:$PHP_INI_SCAN_DIR"
 
