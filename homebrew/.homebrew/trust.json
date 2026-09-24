@@ -4,5 +4,8 @@
   ],
   "trustedtaps": [
     "lzhgus/tap"
+  ],
+  "trustedformulae": [
+    "jandedobbeleer/oh-my-posh/oh-my-posh"
   ]
 }
