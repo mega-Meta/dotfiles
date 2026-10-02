@@ -196,3 +196,44 @@ eza -a --tree -L 2
 stow zsh
 eza -a --tree -L 2
 cat .zshrc
+sudo sfltool resetbtm
+cd ..
+zsh
+\. "$HOME/.nvm/nvm.sh"
+nvm install 24
+node -v
+npm -v
+npm install
+npm install @google/genai
+npm cache clean --force
+# 1. 強制清除本地 npm 緩存（避免快取阻擋新版本查詢）
+npm cache clean --force
+# 2. 安裝官方最新穩定版本的 Google GenAI SDK
+npm install @google/genai@latest
+npm install-scripts approve <pkg>
+npm install-scripts ls
+npm fund google
+npm install-scripts ls
+npm install-scripts electron
+npm install-scripts approve all
+npm install-scripts approve --all
+ll
+ls
+cat package.json
+export GEMINI_API_KEY="AQ.Ab8RN6LfQ9HQZYiR4wkjAoAX5jCG3TxLNh7CnWezC-qWZNLVqg"
+npm start
+npm start
+npm start
+npm start
+npm start
+npm install
+# 1. 強制清除本地的 npm 快取（避免舊的快取阻擋新版號查詢）
+npm cache clean --force
+# 2. 直接指定安裝官方最新發布的穩定版本
+npm install @google/genai@latest @notionhq/client
+npm audit fix --force
+npm audit
+npm install
+npm start
+npm start
+herdr
