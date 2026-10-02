@@ -1,0 +1,9 @@
+2026-09-30T22:31:21.130119Z  INFO herdr::logging: herdr starting event="app.startup" subsystem="client" outcome="started" pid=10850
+2026-09-30T22:31:21.130251Z  INFO herdr::client: connecting to server path=/Users/user/.config/herdr/herdr-client.sock
+2026-09-30T22:31:21.330442Z  INFO herdr::client::handshake: endpoint handshake succeeded generation=1 server_version=0.9.3
+2026-09-30T22:37:54.815738Z  INFO herdr::client: client terminal unavailable; detaching err=Inappropriate ioctl for device (os error 25)
+2026-09-30T22:37:54.816211Z  INFO herdr::logging: herdr exiting event="app.shutdown" subsystem="client" outcome="completed" pid=10850
+2026-10-01T08:16:54.500287Z  INFO herdr::logging: herdr starting event="app.startup" subsystem="client" outcome="started" pid=77274
+2026-10-01T08:16:54.500563Z  INFO herdr::client: connecting to server path=/Users/user/.config/herdr/herdr-client.sock
+2026-10-01T08:16:54.556480Z  INFO herdr::client::handshake: endpoint handshake succeeded generation=1 server_version=0.9.3
+2026-10-01T14:06:33.172678Z  INFO herdr::logging: herdr exiting event="app.shutdown" subsystem="client" outcome="completed" pid=77274

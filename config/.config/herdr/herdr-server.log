@@ -1,0 +1,129 @@
+2026-09-30T22:31:21.031056Z  INFO herdr::server::headless::bootstrap: server using persistent user service context
+2026-09-30T22:31:21.031319Z  INFO herdr::api::server: api server listening path=/Users/user/.config/herdr/herdr.sock
+2026-09-30T22:31:21.032350Z  INFO herdr::persist::io: session file is missing event="persist.restore" subsystem="persist" outcome="missing" path=/Users/user/.config/herdr/session.json
+2026-09-30T22:31:21.032382Z  INFO herdr::app: using pane scrollback configuration pane_scrollback_limit_bytes=10000000
+2026-09-30T22:31:21.072212Z  INFO herdr::logging: checking for updates event="update.check.start" subsystem="update" outcome="started"
+2026-09-30T22:31:21.073217Z  INFO herdr::logging: spawning pane terminal event="pane.spawn.start" subsystem="pane" outcome="started" pane_id=1 rows=40 cols=120 scrollback_limit_bytes=10000000
+2026-09-30T22:31:21.076915Z  INFO herdr::logging: pane child spawned event="pane.spawned" subsystem="pane" outcome="ok" pane_id=1 pid=10863
+2026-09-30T22:31:21.077318Z  INFO herdr::logging: workspace created event="workspace.create" subsystem="workspace" outcome="ok" workspace_id="w1" pane_id=1
+2026-09-30T22:31:21.077342Z  INFO herdr::logging: workspace focused event="workspace.focus" subsystem="workspace" outcome="ok" workspace_id="w1"
+2026-09-30T22:31:21.077352Z  INFO herdr::logging: tab focused event="tab.focus" subsystem="tab" outcome="ok" workspace_id="w1" tab_id="w1:t1"
+2026-09-30T22:31:21.077363Z  INFO herdr::server::headless::bootstrap: created startup workspace cwd=/Users/user/Library
+2026-09-30T22:31:21.077522Z  INFO herdr::server::headless: client protocol socket listening path=/Users/user/.config/herdr/herdr-client.sock
+2026-09-30T22:31:21.077572Z  INFO herdr::server::headless::bootstrap: herdr server started api_socket=/Users/user/.config/herdr/herdr.sock client_socket=/Users/user/.config/herdr/herdr-client.sock
+2026-09-30T22:31:21.077757Z  INFO herdr::logging: herdr starting event="app.startup" subsystem="server" outcome="started" pid=10851
+2026-09-30T22:31:21.330381Z  INFO herdr::server::headless: client connected client_id=2 cols=79 rows=30 cell_width_px=19 cell_height_px=40 surface_active=true render_encoding=SemanticFrame
+2026-09-30T22:31:26.122315Z  INFO herdr::persist::writer: preserved session recovery copy event="persist.backup" subsystem="persist" outcome="ok" path=/Users/user/.config/herdr/session.json backup_path=/Users/user/.config/herdr/session-snapshots/session-000000000000000000001790807486081021000-10851-0.json
+2026-09-30T22:31:26.122631Z  INFO herdr::logging: session saved event="persist.save" subsystem="persist" outcome="ok" path=/Users/user/.config/herdr/session.json workspaces=1
+2026-09-30T22:34:33.059365Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="claude"
+2026-09-30T22:34:33.104672Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="ok" action="install" target="codex"
+2026-09-30T22:34:33.105854Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="hermes"
+2026-09-30T22:34:33.107199Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="grok"
+2026-09-30T22:34:36.591613Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="claude"
+2026-09-30T22:34:36.592400Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="hermes"
+2026-09-30T22:34:36.594742Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="grok"
+2026-09-30T22:35:15.914352Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="claude"
+2026-09-30T22:35:15.915151Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="hermes"
+2026-09-30T22:35:15.917719Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="grok"
+2026-09-30T22:35:30.286194Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="claude"
+2026-09-30T22:35:30.286891Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="hermes"
+2026-09-30T22:35:30.289218Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="grok"
+2026-09-30T22:35:33.341897Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="claude"
+2026-09-30T22:35:33.342739Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="hermes"
+2026-09-30T22:35:33.345412Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="grok"
+2026-09-30T22:35:34.776179Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="claude"
+2026-09-30T22:35:34.776973Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="hermes"
+2026-09-30T22:35:34.779127Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="grok"
+2026-09-30T22:35:35.253391Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="claude"
+2026-09-30T22:35:35.254128Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="hermes"
+2026-09-30T22:35:35.256434Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="grok"
+2026-09-30T22:35:35.856056Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="claude"
+2026-09-30T22:35:35.856941Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="hermes"
+2026-09-30T22:35:35.859702Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="grok"
+2026-09-30T22:35:42.262445Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="claude"
+2026-09-30T22:35:42.263194Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="hermes"
+2026-09-30T22:35:42.265610Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="grok"
+2026-09-30T22:35:43.391809Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="claude"
+2026-09-30T22:35:43.392287Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="hermes"
+2026-09-30T22:35:43.393845Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="grok"
+2026-09-30T22:35:44.322912Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="claude"
+2026-09-30T22:35:44.323830Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="hermes"
+2026-09-30T22:35:44.326229Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="grok"
+2026-09-30T22:35:44.895528Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="claude"
+2026-09-30T22:35:44.896060Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="hermes"
+2026-09-30T22:35:44.897173Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="grok"
+2026-09-30T22:35:45.315256Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="claude"
+2026-09-30T22:35:45.316316Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="hermes"
+2026-09-30T22:35:45.320817Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="grok"
+2026-09-30T22:35:45.776094Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="claude"
+2026-09-30T22:35:45.776829Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="hermes"
+2026-09-30T22:35:45.779108Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="grok"
+2026-09-30T22:35:46.443051Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="claude"
+2026-09-30T22:35:46.443789Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="hermes"
+2026-09-30T22:35:46.446022Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="grok"
+2026-09-30T22:35:49.218010Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="claude"
+2026-09-30T22:35:49.218699Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="hermes"
+2026-09-30T22:35:49.221119Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="grok"
+2026-09-30T22:36:03.872399Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="claude"
+2026-09-30T22:36:03.873242Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="hermes"
+2026-09-30T22:36:03.875893Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="grok"
+2026-09-30T22:36:14.623924Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="claude"
+2026-09-30T22:36:14.624571Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="hermes"
+2026-09-30T22:36:14.626554Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="grok"
+2026-09-30T22:36:53.676586Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="claude"
+2026-09-30T22:36:53.677399Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="hermes"
+2026-09-30T22:36:53.679911Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="grok"
+2026-09-30T22:36:55.325989Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="claude"
+2026-09-30T22:36:55.326838Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="hermes"
+2026-09-30T22:36:55.329037Z  INFO herdr::logging: integration action finished event="integration.action" subsystem="integration" outcome="error" action="install" target="grok"
+2026-09-30T22:37:42.037136Z  INFO herdr::logging: pane child exited event="pane.exit" subsystem="pane" outcome="completed" pane_id=1 status="ExitStatus { code: 1, signal: None }"
+2026-09-30T22:37:42.037697Z  INFO herdr::pane: pane session terminated pane=1 pid=10863 signal=Hangup
+2026-09-30T22:37:42.037989Z  INFO herdr::logging: spawning pane terminal event="pane.spawn.start" subsystem="pane" outcome="started" pane_id=2 rows=30 cols=79 scrollback_limit_bytes=10000000
+2026-09-30T22:37:42.045538Z  INFO herdr::logging: pane child spawned event="pane.spawned" subsystem="pane" outcome="ok" pane_id=2 pid=15085
+2026-09-30T22:37:42.046090Z  INFO herdr::logging: workspace created event="workspace.create" subsystem="workspace" outcome="ok" workspace_id="w2" pane_id=2
+2026-09-30T22:37:42.046137Z  INFO herdr::logging: workspace focused event="workspace.focus" subsystem="workspace" outcome="ok" workspace_id="w2"
+2026-09-30T22:37:42.046158Z  INFO herdr::logging: tab focused event="tab.focus" subsystem="tab" outcome="ok" workspace_id="w2" tab_id="w2:t1"
+2026-09-30T22:37:47.054832Z  INFO herdr::logging: session saved event="persist.save" subsystem="persist" outcome="ok" path=/Users/user/.config/herdr/session.json workspaces=1
+2026-09-30T22:37:54.815863Z  INFO herdr::server::headless: client detached client_id=2
+2026-09-30T22:38:38.321503Z  INFO herdr::server::headless::lifecycle: server shutdown initiated
+2026-09-30T22:38:38.322202Z  INFO herdr::logging: pane child exited event="pane.exit" subsystem="pane" outcome="completed" pane_id=2 status="ExitStatus { code: 1, signal: Some(\"Terminated: 15\") }"
+2026-09-30T22:38:38.376731Z  INFO herdr::server::headless::lifecycle: completing server shutdown
+2026-09-30T22:38:38.379087Z  INFO herdr::logging: session saved event="persist.save" subsystem="persist" outcome="ok" path=/Users/user/.config/herdr/session.json workspaces=1
+2026-09-30T22:38:38.379160Z  INFO herdr::server::headless: headless server exiting
+2026-09-30T22:38:38.379397Z  INFO herdr::pane: pane session terminated pane=2 pid=15085 signal=Hangup
+2026-09-30T22:38:38.380886Z  INFO herdr::logging: herdr exiting event="app.shutdown" subsystem="server" outcome="completed" pid=10851
+2026-10-01T08:16:54.299279Z  INFO herdr::server::headless::bootstrap: server using persistent user service context
+2026-10-01T08:16:54.302405Z  INFO herdr::api::server: api server listening path=/Users/user/.config/herdr/herdr.sock
+2026-10-01T08:16:54.318401Z  INFO herdr::logging: spawning pane terminal event="pane.spawn.start" subsystem="pane" outcome="started" pane_id=1 rows=24 cols=80 scrollback_limit_bytes=10000000
+2026-10-01T08:16:54.328749Z  INFO herdr::logging: pane child spawned event="pane.spawned" subsystem="pane" outcome="ok" pane_id=1 pid=77277
+2026-10-01T08:16:54.330159Z  INFO herdr::logging: session restore evaluated event="persist.restore" subsystem="persist" outcome="ok" workspaces=1
+2026-10-01T08:16:54.330553Z  INFO herdr::app: using pane scrollback configuration pane_scrollback_limit_bytes=10000000
+2026-10-01T08:16:54.447743Z  INFO herdr::logging: checking for updates event="update.check.start" subsystem="update" outcome="started"
+2026-10-01T08:16:54.450690Z  INFO herdr::server::headless::bootstrap: restored session already has workspaces; ignoring startup cwd cwd=/Users/user/Documents/gemini-dock-app
+2026-10-01T08:16:54.451516Z  INFO herdr::server::headless: client protocol socket listening path=/Users/user/.config/herdr/herdr-client.sock
+2026-10-01T08:16:54.451637Z  INFO herdr::server::headless::bootstrap: herdr server started api_socket=/Users/user/.config/herdr/herdr.sock client_socket=/Users/user/.config/herdr/herdr-client.sock
+2026-10-01T08:16:54.452839Z  INFO herdr::logging: herdr starting event="app.startup" subsystem="server" outcome="started" pid=77275
+2026-10-01T08:16:54.556746Z  INFO herdr::server::headless: client connected client_id=2 cols=69 rows=27 cell_width_px=21 cell_height_px=44 surface_active=true render_encoding=SemanticFrame
+2026-10-01T08:46:54.415848Z  INFO herdr::logging: checking for updates event="update.check.start" subsystem="update" outcome="started"
+2026-10-01T13:07:24.238188Z  INFO herdr::logging: checking for updates event="update.check.start" subsystem="update" outcome="started"
+2026-10-01T14:06:33.172313Z  INFO herdr::server::headless: client detached client_id=2
+2026-10-01T14:22:53.342375Z  INFO herdr::logging: checking for updates event="update.check.start" subsystem="update" outcome="started"
+2026-10-01T14:52:53.290181Z  INFO herdr::logging: checking for updates event="update.check.start" subsystem="update" outcome="started"
+2026-10-01T15:22:53.222106Z  INFO herdr::logging: checking for updates event="update.check.start" subsystem="update" outcome="started"
+2026-10-01T15:52:53.226453Z  INFO herdr::logging: checking for updates event="update.check.start" subsystem="update" outcome="started"
+2026-10-01T16:22:53.153654Z  INFO herdr::logging: checking for updates event="update.check.start" subsystem="update" outcome="started"
+2026-10-01T16:52:53.138549Z  INFO herdr::logging: checking for updates event="update.check.start" subsystem="update" outcome="started"
+2026-10-01T17:22:53.151316Z  INFO herdr::logging: checking for updates event="update.check.start" subsystem="update" outcome="started"
+2026-10-01T17:52:53.142204Z  INFO herdr::logging: checking for updates event="update.check.start" subsystem="update" outcome="started"
+2026-10-01T18:22:53.046389Z  INFO herdr::logging: checking for updates event="update.check.start" subsystem="update" outcome="started"
+2026-10-02T01:55:21.909461Z  INFO herdr::logging: checking for updates event="update.check.start" subsystem="update" outcome="started"
+2026-10-02T02:25:22.226584Z  INFO herdr::logging: checking for updates event="update.check.start" subsystem="update" outcome="started"
+2026-10-02T02:55:22.222712Z  INFO herdr::logging: checking for updates event="update.check.start" subsystem="update" outcome="started"
+2026-10-02T02:59:38.263587Z  INFO herdr::server::headless::lifecycle: server shutdown initiated
+2026-10-02T02:59:38.264413Z  INFO herdr::logging: pane child exited event="pane.exit" subsystem="pane" outcome="completed" pane_id=1 status="ExitStatus { code: 1, signal: Some(\"Terminated: 15\") }"
+2026-10-02T02:59:38.313924Z  INFO herdr::server::headless::lifecycle: completing server shutdown
+2026-10-02T02:59:38.363048Z  INFO herdr::persist::writer: preserved session recovery copy event="persist.backup" subsystem="persist" outcome="ok" path=/Users/user/.config/herdr/session.json backup_path=/Users/user/.config/herdr/session-snapshots/session-000000000000000000001790909978315362000-77275-0.json
+2026-10-02T02:59:38.363924Z  INFO herdr::logging: session saved event="persist.save" subsystem="persist" outcome="ok" path=/Users/user/.config/herdr/session.json workspaces=1
+2026-10-02T02:59:38.363948Z  INFO herdr::server::headless: headless server exiting
+2026-10-02T02:59:38.364031Z  INFO herdr::pane: pane session terminated pane=1 pid=77277 signal=Hangup
+2026-10-02T02:59:38.365586Z  INFO herdr::logging: herdr exiting event="app.shutdown" subsystem="server" outcome="completed" pid=77275
