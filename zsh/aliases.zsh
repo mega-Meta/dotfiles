@@ -1,3 +1,6 @@
+alias cd~='cd ~'
+alias cd..='cd ..'
+
 # Better ls
 alias ls='eza -la --icons --git'
 
@@ -69,3 +72,38 @@ alias dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
 alias stream='mpv av://v4l2:/dev/video4 --fullscreen --demuxer-lavf-o=input_format=mjpeg,framerate=30 --profile=low-latency --untimed'
 
 alias df='duf'
+
+# 全文字即時模糊搜尋，Enter 直接用 nvim 開啟
+fif() {
+  rm -f /tmp/fzf.rg
+  # 利用 ripgrep 搜尋，並用 fzf 互動篩選
+  local file_line=$(rg --color=always --line-number --no-heading --smart-case "${*:-}" | \
+    fzf --ansi \
+        --color "hl:-1:underline,hl+:-1:underline:reverse" \
+        --delimiter : \
+        --preview 'bat --color=always --highlight-line {2} --style=numbers,changes {1}' \
+        --preview-window 'up,60%,border-bottom,+{2}+3/3,~3')
+  
+  # 如果有選中檔案，直接用 nvim 開啟並跳到該行數
+  if [ -n "$file_line" ]; then
+    local file=$(echo "$file_line" | cut -d: -f1)
+    local line=$(echo "$file_line" | cut -d: -f2)
+    nvim "+$line" "$file"
+  fi
+}
+
+# 智慧跳轉 + eza 目錄結構即時預覽
+alias cx='zoxide query -l | fzf --reverse --height 50% --prompt="Go To  : " \
+  --preview "eza --tree --level=2 --color=always --icons=always {}" \
+  --preview-window "right:50%:border-left" \
+  --bind "enter:accept"'
+
+
+# 打 killpro，打字搜尋進程名稱，按下 Enter 直接強制結束 (kill -9)
+alias killpro="ps -ef | fzf --header '選擇要強制結束的進程' --height 40% --reverse | awk '{print \$2}' | xargs kill -9"
+
+# 找目前目錄下大於 50MB 的檔案並線上檢視
+alias findbig="fd --type f --size +50M | fzf --preview 'bat --color=always --line-range :100 {}' --header '選中的檔案路徑會直接印在命令列'"
+# 找目前目錄下大於 1GB 的檔案並線上檢視
+alias findbigger="fd --type f --size +1G | fzf --preview 'bat --color=always --line-range :100 {}' --header '選中的檔案路徑會直接印在命令列'"
+
