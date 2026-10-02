@@ -17,3 +17,6 @@ export NVM_DIR="$HOME/.nvm"
 if [ -f ~/aliases.zsh ]; then
   source ~/aliases.zsh
 fi
+
+. "$HOME/.atuin/bin/env"
+eval "$(atuin init bash)"
