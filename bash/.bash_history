@@ -241,3 +241,7 @@ ls
 ls
 ll
 zsh
+chsh -s /bin/zsh
+ls
+echo $0
+zsh
