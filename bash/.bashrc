@@ -2,7 +2,8 @@
 export MC_SID=""
 
 # 原本的 Oh My Posh 啟動行
-eval "$(oh-my-posh init bash)"
+#eval "$(oh-my-posh init bash)"
+eval "$(oh-my-posh init bash --config ~/.config/ohmyposh/config.omp.json)"
 
 
 [ ! -f "$HOME/.x-cmd.root/X" ] || . "$HOME/.x-cmd.root/X" # boot up x-cmd.
