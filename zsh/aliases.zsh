@@ -23,6 +23,16 @@ if [ -n "$ZSH_VERSION" ]; then
     compdef eza=ls
 fi
 
+# tldr
+alias manx='tldr'
+#alias manz="tldr --list | fzf --no-sort --preview 'tldr {}'"
+alias manz='(echo -e "git\ncurl\ntar\ngrep\nfind\nssh\ndocker\ncat\nls\nmv"; tldr --list) | awk "!awk_built[\$0]++" | fzf --no-sort --preview "tldr {}"'
+
+brewinfo() {
+    brew ls | fzf --preview 'brew info {}; echo -e "\n================ DEPENDENCIES ================\n"; HOMEBREW_NO_ENV_HINTS=1 brew deps --tree {}' --preview-window=right:60%
+}
+
+
 # Better cat
 alias cat='bat'
 
