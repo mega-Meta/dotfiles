@@ -37,8 +37,10 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 [ ! -f "$HOME/.x-cmd.root/X" ] || . "$HOME/.x-cmd.root/X"
 
 # 啟動 Oh My Posh 提示字元
-#eval "$(oh-my-posh init zsh)"
-eval "$(oh-my-posh init zsh --config ~/.config/ohmyposh/mytheme.omp.json)"
+#https://configurator.ohmyposh.dev/
+#eval "$(oh-my-posh init zsh)" config.omp.json
+#eval "$(oh-my-posh init zsh --config ~/.config/ohmyposh/mytheme.omp.json)"
+eval "$(oh-my-posh init zsh --config ~/.config/ohmyposh/config.omp.json)"
 
 
 # 載入自動建議外掛 (推薦改用 Homebrew 版本)
@@ -68,8 +70,11 @@ export FZF_CTRL_T_OPTS="
 
 # 🌟 歷史指令預覽：按下 Ctrl + R 找舊指令時，會用小視窗精美呈現
 export FZF_CTRL_R_OPTS="
-  --preview 'echo {}' --preview-window down:3:wrap
-  --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'" # Ctrl+Y 可以直接複製該指令
+  --preview 'echo {} | bat --color=always --style=plain -l sh' 
+  --preview-window 'up:3:wrap'
+  --layout=reverse --height=40%
+  --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
+  --header '按下 Ctrl-Y 複製指令 / Enter 直接執行'"
 
 
 # 載入自訂別名檔案
