@@ -1,0 +1,104 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "version": 5,
+  "final_space": true,
+  "blocks": [
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "type": "os",
+          "style": "diamond",
+          "foreground": "#ffffff",
+          "background": "#c44569",
+          "template": "{{ if .WSL }}WSL at {{ end }}{{.Icon}}",
+          "leading_diamond": "\ue0b6",
+          "options": {
+            "windows": "\ue62a"
+          }
+        },
+        {
+          "type": "path",
+          "style": "powerline",
+          "foreground": "#ffffff",
+          "background": "#c44569",
+          "template": "{{ .Path }} ",
+          "powerline_symbol": "\ue0b0",
+          "options": {
+            "style": "full"
+          }
+        },
+        {
+          "type": "git",
+          "style": "powerline",
+          "foreground": "#333333",
+          "background": "#caffbf",
+          "background_templates": [
+            "{{ if or (.Working.Changed) (.Staging.Changed) }}#FCA17D{{ end }}",
+            "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#f26d50{{ end }}",
+            "{{ if gt .Ahead 0 }}#89d1dc{{ end }}",
+            "{{ if gt .Behind 0 }}#f17c37{{ end }}"
+          ],
+          "template": " {{ .UpstreamIcon }} {{ .HEAD }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }} ",
+          "powerline_symbol": "\ue0b0"
+        },
+        {
+          "type": "status",
+          "style": "powerline",
+          "foreground": "#333333",
+          "background": "#caffbf",
+          "template": " {{ if eq .Code 0 }}\uf00c{{ else }}\uf071 {{ .Code }}{{ end }} ",
+          "powerline_symbol": "\ue0b0"
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "right",
+      "segments": [
+        {
+          "type": "shell",
+          "style": "diamond",
+          "foreground": "#ffffff",
+          "background": "#348a33",
+          "template": " {{ .Name }} ",
+          "trailing_diamond": "\ue0b4",
+          "invert_powerline": true
+        },
+        {
+          "type": "session",
+          "style": "powerline",
+          "foreground": "#333333",
+          "background": "#caffbf",
+          "template": " \uf007 {{ .UserName }}@{{ .HostName }} ",
+          "powerline_symbol": "\ue0b0"
+        },
+        {
+          "type": "battery",
+          "style": "diamond",
+          "foreground": "#ffffff",
+          "background": "#33658A",
+          "template": " {{ if not .Error }}{{ .Icon }} {{ .Percentage }}%{{ end }}{{ .Error }} ",
+          "powerline_symbol": "\ue0b0"
+        },
+        {
+          "type": "time",
+          "style": "diamond",
+          "foreground": "#e2f797",
+          "background": "#5e338a",
+          "template": " \uf017 {{ .CurrentDate | date .Format }} ",
+          "powerline_symbol": "\ue0b0"
+        },
+        {
+          "type": "project",
+          "style": "diamond",
+          "foreground": "#ffffff",
+          "background": "#33658A",
+          "template": " \ueb30 {{ .Name }}{{ if .Version }} {{ .Version }}{{ end }} ",
+          "powerline_symbol": "\ue0b0"
+        }
+      ]
+    }
+  ]
+}
