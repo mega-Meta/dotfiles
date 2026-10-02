@@ -237,3 +237,7 @@ npm install
 npm start
 npm start
 herdr
+ls
+ls
+ll
+zsh
