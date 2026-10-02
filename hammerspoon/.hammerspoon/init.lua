@@ -19,6 +19,8 @@
 -- ==============================================================================
 -- 終極完美簡易版 init.lua (第一部分：核心基礎、變數與純手動輸入法切換)
 -- ==============================================================================
+-- 允許 Hammerspoon 視窗可以正常獲取 macOS 鍵盤輸入焦點
+--hs.dockicon.show()
 
 local DEBUG_FLAG = false  -- 偵錯開關，關閉為 false
 local EISUU_KEY = 102
@@ -477,6 +479,25 @@ hs.hotkey.bind({ "ctrl", "shift" }, "S", function()
     hs.eventtap.keyStroke({ "ctrl", "alt", "shift", "cmd" }, "C", 0)
     hs.alert.show("將文字轉換為簡體中文")
   end)
+end)
+
+-- ========================================================================
+-- init.lua 快捷鍵修正區塊（請覆蓋舊有的快速鍵設定）
+-- ========================================================================
+local geminiAI = require("hs_geminiai")
+
+-- 🔑 【金鑰集中管理區】
+--geminiAI.config = {
+--    geminiKey = "AQ.Ab8RN6I40Ro4aiKZ7_JRF50qFqQx0h5DjbeOpsfDxG-cZJpZwg",
+--    notionToken = "secret_您的_Notion_Integration_Token",
+--    notionDbId = "您的_Notion_Database_ID"
+--}
+--local mySecretKey = "AQ.Ab8RN6LfQ9HQZYiR4wkjAoAX5jCG3TxLNh7CnWezC-qWZNLVqg"
+
+-- 綁定快速鍵開啟/關閉 AI 工作台
+hs.hotkey.bind({ "alt", "ctrl"}, "G", function()
+    -- 直接呼叫外部模組，絕不在這裡塞入任何處理邏輯
+    geminiAI.toggleConsole()
 end)
 
 -- -----------------------------------------------------------------------------

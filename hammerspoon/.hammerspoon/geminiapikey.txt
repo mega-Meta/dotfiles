@@ -1,0 +1,25 @@
+
+
+AQ.Ab8RN6LfQ9HQZYiR4wkjAoAX5jCG3TxLNh7CnWezC-qWZNLVqg
+
+projects/969112639474
+
+project no:
+969112639474
+
+
+curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent" \
+  -H 'Content-Type: application/json' \
+  -H 'X-goog-api-key: AQ.Ab8RN6LfQ9HQZYiR4wkjAoAX5jCG3TxLNh7CnWezC-qWZNLVqg' \
+  -X POST \
+  -d '{
+    "contents": [
+      {
+        "parts": [
+          {
+            "text": "Explain how AI works in a few words"
+          }
+        ]
+      }
+    ]
+  }'
