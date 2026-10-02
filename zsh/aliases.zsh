@@ -1,5 +1,5 @@
 # Better ls
-alias ls='eza --icons'
+alias ls='eza -a --icons --git'
 
 # Detailed listing
 alias ll='eza -lh --icons --git'
@@ -9,12 +9,16 @@ alias la='eza -lah --icons --git'
 
 # Detailed listing including hidden files by tree
 alias lat='eza -lah --icons --git --tree -L 2' 
+alias lt='lat' #'eza -lah --icons --git --tree -L 2'
 
 # Tree view
 alias tree='eza --tree --icons'
 
 # Reuse ls completions for eza (avoids defining a separate completion function)
-compdef eza=ls
+# Only run compdef if we are currently inside Zsh
+if [ -n "$ZSH_VERSION" ]; then
+    compdef eza=ls
+fi
 
 # Better cat
 alias cat='bat'
