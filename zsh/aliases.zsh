@@ -1,5 +1,5 @@
 # Better ls
-alias ls='eza -a --icons --git'
+alias ls='eza -la --icons --git'
 
 # Detailed listing
 alias ll='eza -lh --icons --git'
@@ -8,7 +8,7 @@ alias ll='eza -lh --icons --git'
 alias la='eza -lah --icons --git'
 
 # Detailed listing including hidden files by tree
-alias lat='eza -lah --icons --git --tree -L 2' 
+alias lat='eza -lah --icons --git --tree -L 2 --ignore-glob=".git|.cache|node_modules|.orbstack"'
 alias lt='lat' #'eza -lah --icons --git --tree -L 2'
 
 # Tree view
@@ -67,3 +67,5 @@ alias dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
 # =========================================================
 
 alias stream='mpv av://v4l2:/dev/video4 --fullscreen --demuxer-lavf-o=input_format=mjpeg,framerate=30 --profile=low-latency --untimed'
+
+alias df='duf'
