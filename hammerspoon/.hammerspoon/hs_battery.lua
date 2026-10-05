@@ -4,8 +4,6 @@ sleepWatcher = nil
 batteryTimer = nil  
 
 local lowBatteryAlertTriggered = false
-local highBatteryActionTriggered = false
-local unpersistActionTriggered = false 
 
 ---------------------------------------------------------
 -- 🛡️ 防呆機制：檢查 init.lua 是否有設定全域變數，若無則套用預設值
@@ -36,12 +34,24 @@ if not bclmPath then
         "⚠️ 找不到 bclm 工具", 
         "Hammerspoon 無法在預設路徑中找到 bclm，自動停止充電功能將無法運作。", 
         "我知道了", nil, "critical")
-else
-    print("🔋 電池守護者：成功偵測到 bclm 路徑為 -> " .. bclmPath)
 end
 
 ---------------------------------------------------------
--- ⚡ 核心充電控制函式
+-- ⚙️ 封裝：安全的 bclm 寫入函式
+---------------------------------------------------------
+local function writeBclmValue(targetValue, reason)
+    if not bclmPath then return end
+    hs.task.new("/usr/bin/sudo", function(exitCode, stdOut, stdErr)
+        if exitCode == 0 then
+            print(string.format("🔋 電池守護者 [%s]：成功將硬體充電限制修改為 %s%%。", reason, targetValue))
+        else
+            print("BCLM 寫入錯誤: " .. (stdErr or "未知原因"))
+        end
+    end, {bclmPath, "write", tostring(targetValue)}):start()
+end
+
+---------------------------------------------------------
+-- ⚡ 核心充電控制邏輯（供狀態改變與開機時呼叫）
 ---------------------------------------------------------
 local function enforceBatteryLimits()
     local percentage = hs.battery.percentage()
@@ -68,110 +78,84 @@ local function enforceBatteryLimits()
         end
     end
 
-    -- 狀況 B：高於設定值 且正接上電源 -> 停止系統充電
-    if percentage >= topBatteryPercentage and powerSource == "AC Power" and bclmPath then
-        if not highBatteryActionTriggered then
-            hs.task.new("/usr/bin/sudo", function(exitCode, stdOut, stdErr)
-                if exitCode == 0 then
-                    hs.notify.new({
-                        title="🔋 電池守護者", 
-                        informativeText="電量已達 " .. string.format("%.0f", percentage) .. "%，已發送鎖定充電上限指令。"
-                    }):send()
-                    unpersistActionTriggered = false 
-                else
-                    print("BCLM 錯誤: " .. (stdErr or "未知原因"))
-                end
-            end, {bclmPath, "write", tostring(topBatteryPercentage)}):start()
-
-            highBatteryActionTriggered = true
-        end
-    else
-        if percentage < topBatteryPercentage then
-            highBatteryActionTriggered = false
-        end
-    end
-
-    -- 狀況 C：拔掉電源（使用電池） -> 強制回復預設 100% 充電設定
-    if powerSource == "Battery Power" and bclmPath then
-        if not unpersistActionTriggered then
-            hs.task.new("/usr/bin/sudo", function(exitCode, stdOut, stdErr)
-                if exitCode == 0 then
-                    print("🔋 電池守護者：已拔除電源，SMC 充電限制已重設回 100%。")
-                    unpersistActionTriggered = true
-                    highBatteryActionTriggered = false 
-                else
-                    print("BCLM 重設錯誤: " .. (stdErr or "未知原因"))
-                end
-            end, {bclmPath, "write", "100"}):start()
-        end
+    -- 狀況 B：【提早 10% 預警防禦】與狀況 C（拔電恢復 100%）
+    -- 這裡主要處理即時的狀態切換，定時巡邏會做智慧比對
+    local earlyTriggerPercentage = topBatteryPercentage - 10
+    if percentage >= earlyTriggerPercentage and powerSource == "AC Power" then
+        -- 先行呼叫一次，後續由定時巡邏智慧守護
+        writeBclmValue(topBatteryPercentage, "電量達預警區")
+    elseif powerSource == "Battery Power" then
+        writeBclmValue(100, "拔除電源線")
     end
 end
 
 ---------------------------------------------------------
--- 🕒 監聽器 1：常態電池狀態監聽
+-- 🕒 監聽器啟動
 ---------------------------------------------------------
 batteryWatcher = hs.battery.watcher.new(enforceBatteryLimits)
 batteryWatcher:start()
 
----------------------------------------------------------
--- 💤 監聽器 2：防止休眠偷充電的防禦機制
----------------------------------------------------------
 sleepWatcher = hs.caffeinate.watcher.new(function(eventType)
     local powerSource = hs.battery.powerSource()
-    
     if eventType == hs.caffeinate.watcher.systemWillSleep then
-        if powerSource == "AC Power" and bclmPath then
-            print("💤 系統即將休眠，強制鎖定 BCLM 為 " .. topBatteryPercentage .. "%...")
-            hs.task.new("/usr/bin/sudo", nil, {bclmPath, "write", tostring(topBatteryPercentage)}):start()
+        if powerSource == "AC Power" then
+            writeBclmValue(topBatteryPercentage, "系統即將休眠")
         end
-        
-    elseif eventType == hs.caffeinate.watcher.systemDidWake or 
-           eventType == hs.caffeinate.watcher.screensDidWake then
-        print("☀️ 系統已喚醒，重新檢查電池狀態並修正限制...")
-        highBatteryActionTriggered = false
-        unpersistActionTriggered = false
+    elseif eventType == hs.caffeinate.watcher.systemDidWake or eventType == hs.caffeinate.watcher.screensDidWake then
         enforceBatteryLimits()
     end
 end)
 sleepWatcher:start()
 
 ---------------------------------------------------------
--- 🔄 防線 3：每 60 秒定時巡邏 + 硬體裝死主動人工作業提示
+-- 🔄 🚀【智慧型 60 秒定時巡邏：先讀再寫，防重複點火】
 ---------------------------------------------------------
 batteryTimer = hs.timer.doEvery(60, function()
     local percentage = hs.battery.percentage()
     local isCharging = hs.battery.isCharging()
     local powerSource = hs.battery.powerSource()
 
-    if not percentage then return end
+    if not percentage or not bclmPath then return end
 
-    if percentage >= topBatteryPercentage and powerSource == "AC Power" then
-        -- 1. 如果數值到了但高電量旗標沒反應，重新發送一次指令
-        if not highBatteryActionTriggered then
-            enforceBatteryLimits()
-        end
+    -- 只有在「插著電」且「電量已達提早 10% 預警區」才需要巡邏
+    if percentage >= (topBatteryPercentage - 10) and powerSource == "AC Power" then
         
-        -- 2. 🚨【硬體裝死捕獲防護】🚨
-        -- 如果目前電量已經超過上限值 2% 以上（說明 SMC 沒理會 bclm）且系統顯示還在充電
+        -- 🔍 第一步：先執行 bclm read 讀取目前的硬體值
+        hs.task.new(bclmPath, function(exitCode, stdOut, stdErr)
+            if exitCode == 0 and stdOut then
+                -- 清除多餘的換行與空白，取得乾淨的數字字串 (例如 "100" 或 "85")
+                local currentHardwareValue = string.gsub(stdOut, "%s+", "")
+                
+                -- 🔍 第二步：智慧比對！
+                -- 如果硬體值被系統洗掉了（不等於我們設定的上限值），才重新寫入！
+                if currentHardwareValue ~= tostring(topBatteryPercentage) then
+                    print(string.format("⚠️ 偵測到硬體值異動！目前為 %s%%，與設定值 %d%% 不符，發動修正...", currentHardwareValue, topBatteryPercentage))
+                    writeBclmValue(topBatteryPercentage, "定時巡邏修正")
+                end
+            end
+        end, {"read"}):start() -- 這裡呼叫 read 不需要 sudo 權限，速度極快且不傷系統
+        
+        -- 🚨【硬體晶片卡死完全捕獲】高於目標值 2% 且持續顯示正在充電
         if percentage >= (topBatteryPercentage + 2) and isCharging then
-            -- 🎵 播放警示音
             local sound = hs.sound.getByName("Blow")
             if sound then sound:play() end
-            
-            -- 🗣️ 使用 macOS 系統語音對你大喊（中文）
             hs.speech.new():speak("電池已超出限制，請重新插拔電源線")
-            
-            -- 🚨 跳出阻斷式強烈警告彈窗
             hs.dialog.alert(100, 100, function() end, 
                 "🚨 SMC 硬體充電卡死！", 
-                "雖然限制已寫入，但系統正在強行充電（目前已達 " .. string.format("%.0f", percentage) .. "%）。\n\n請立刻【拔掉 Mac 電源線，等待3秒再插回】以強制重設硬體狀態！", 
+                "目前已達 " .. string.format("%.0f", percentage) .. "%（上限為 " .. topBatteryPercentage .. "%）。\n\n硬體暫存器值雖正確，但晶片卡死，請【拔掉 Mac 電源線，等待3秒再插回】強制重設硬體狀態！", 
                 "我知道了", nil, "critical")
-                
-            -- 重置旗標，允許系統在插拔後重新套用
-            highBatteryActionTriggered = false
         end
     end
 end)
 
+---------------------------------------------------------
+-- 🚀【一開機/重載配置立刻首次初始化檢查】
+---------------------------------------------------------
+local initialPowerSource = hs.battery.powerSource()
+local initialPercentage = hs.battery.percentage()
+if initialPowerSource == "AC Power" and initialPercentage and initialPercentage >= (topBatteryPercentage - 10) then
+    writeBclmValue(topBatteryPercentage, "開機初始化鎖定")
+end
+
 -- 啟動提示
-hs.notify.new({title="Hammerspoon", informativeText="電池充電保護模組已成功啟動！"}):send()
+hs.notify.new({title="Hammerspoon", informativeText="電池智慧守護模組已成功啟動！"}):send()
