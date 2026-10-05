@@ -1,7 +1,7 @@
 -- 將監聽器變數設為全域（Global），防止被系統自動回收
 batteryWatcher = nil 
 sleepWatcher = nil
-batteryTimer = nil  -- 新增：定時器全域變數
+batteryTimer = nil  
 
 local lowBatteryAlertTriggered = false
 local highBatteryActionTriggered = false
@@ -75,7 +75,7 @@ local function enforceBatteryLimits()
                 if exitCode == 0 then
                     hs.notify.new({
                         title="🔋 電池守護者", 
-                        informativeText="電量已達 " .. string.format("%.0f", percentage) .. "%，已自動鎖定充電上限至 " .. topBatteryPercentage .. "%。"
+                        informativeText="電量已達 " .. string.format("%.0f", percentage) .. "%，已發送鎖定充電上限指令。"
                     }):send()
                     unpersistActionTriggered = false 
                 else
@@ -136,20 +136,42 @@ end)
 sleepWatcher:start()
 
 ---------------------------------------------------------
--- 🔄 🚀 新增防線 3：每 60 秒主動巡邏檢查，防止錯過跳字點
+-- 🔄 防線 3：每 60 秒定時巡邏 + 硬體裝死主動人工作業提示
 ---------------------------------------------------------
 batteryTimer = hs.timer.doEvery(60, function()
     local percentage = hs.battery.percentage()
+    local isCharging = hs.battery.isCharging()
     local powerSource = hs.battery.powerSource()
 
-    -- 如果插著電且電量已經超過上限，但高電量旗標卻沒被觸發（說明剛才漏掉了）
-    -- 或者防止系統自己在背景把暫存器洗回 100
-    if percentage and percentage >= topBatteryPercentage and powerSource == "AC Power" then
-        -- 解開開關，強制重新執行一次執法，把 100 壓回設定值
-        highBatteryActionTriggered = false 
-        enforceBatteryLimits()
+    if not percentage then return end
+
+    if percentage >= topBatteryPercentage and powerSource == "AC Power" then
+        -- 1. 如果數值到了但高電量旗標沒反應，重新發送一次指令
+        if not highBatteryActionTriggered then
+            enforceBatteryLimits()
+        end
+        
+        -- 2. 🚨【硬體裝死捕獲防護】🚨
+        -- 如果目前電量已經超過上限值 2% 以上（說明 SMC 沒理會 bclm）且系統顯示還在充電
+        if percentage >= (topBatteryPercentage + 2) and isCharging then
+            -- 🎵 播放警示音
+            local sound = hs.sound.getByName("Blow")
+            if sound then sound:play() end
+            
+            -- 🗣️ 使用 macOS 系統語音對你大喊（中文）
+            hs.speech.new():speak("電池已超出限制，請重新插拔電源線")
+            
+            -- 🚨 跳出阻斷式強烈警告彈窗
+            hs.dialog.alert(100, 100, function() end, 
+                "🚨 SMC 硬體充電卡死！", 
+                "雖然限制已寫入，但系統正在強行充電（目前已達 " .. string.format("%.0f", percentage) .. "%）。\n\n請立刻【拔掉 Mac 電源線，等待3秒再插回】以強制重設硬體狀態！", 
+                "我知道了", nil, "critical")
+                
+            -- 重置旗標，允許系統在插拔後重新套用
+            highBatteryActionTriggered = false
+        end
     end
 end)
 
 -- 啟動提示
-hs.notify.new({title="Hammerspoon", informativeText="終極電池守護模組（含定時巡邏）已成功啟動！"}):send()
+hs.notify.new({title="Hammerspoon", informativeText="電池充電保護模組已成功啟動！"}):send()
