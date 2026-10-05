@@ -84,8 +84,9 @@ local function enforceBatteryLimits()
     if percentage >= earlyTriggerPercentage and powerSource == "AC Power" then
         -- 先行呼叫一次，後續由定時巡邏智慧守護
         writeBclmValue(topBatteryPercentage, "電量達預警區")
-    elseif powerSource == "Battery Power" then
-        writeBclmValue(100, "拔除電源線")
+    --以下拔除電源線恢復100暫不執行
+    --elseif powerSource == "Battery Power" then
+    --    writeBclmValue(100, "拔除電源線")
     end
 end
 
