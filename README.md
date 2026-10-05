@@ -22,7 +22,9 @@ As part of my journey with various stacks and technologies, I've encountered a c
 Though I had my own personal dotfiles repository before, I essentially followed the conventional practice of "copy-paste," similar to many others. For instance, if I needed to update my .zshrc file for some reason, I would first update my configuration on GitHub using the following commands:
 
 ### # opening dotfiles folder
+```bash
 $ cd ~/Developer/dotfiles 
+```
 
 # modify the .zshrc file
 $ code .zshrc
@@ -30,14 +32,17 @@ $ code .zshrc
 # copy the new configuration to home directory
 $ cp .zshrc ~/.zshrc
 
-# finally, push the changes to main branch
+#### # finally, push the changes to main branch
+```bash
 $ git commit -a -m "modified .zshrc" && git push origin main
+```
 As you can see, this is a lot of commands for doing so little. However, there's a great workaround to all of this.
 
 stow to the rescue!
 In order to install GNU Stow on your Mac, you need to have Homebrew first. Install Homebrew and all of its dependencies using the following command:
-
+```bash
 $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
 Once installed properly, we can install Stow using the following command:
 
 $ brew install stow
