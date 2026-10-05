@@ -1,5 +1,6 @@
 alias cd~='cd ~'
 alias cd..='cd ..'
+alias dotfs='cd ~/.dotfiles'
 
 # Better ls
 alias ls='eza -la --icons --git'
