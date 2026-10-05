@@ -1,15 +1,34 @@
-alias cd~='cd ~'
-alias cd..='cd ..'
-alias dotfs='cd ~/.dotfiles'
+# 快速返回上層
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+
+# 讓 ls 預設帶有顏色、人性化檔案大小與詳細資訊
+#alias ls="ls --color=auto"
+#alias ll="ls -lh --color=auto"
+#alias la="ls -A --color=auto"
+#alias lla="ls -lah --color=auto"
+
+# 安全防護（刪除、搬移檔案時跳出確認提示）
+alias rm="rm -i"
+alias cp="cp -i"
+alias mv="mv -i"
+
+# 自動建立多層目錄
+alias mkdir="mkdir -pv"
+
+alias gohome='cd ~'
+#alias cd..='cd ..'
+alias .file='cd ~/.dotfiles'
 
 # Better ls
-alias ls='eza -la --icons --git'
+alias ls='eza -la --icons --git --color=auto'
 
 # Detailed listing
-alias ll='eza -lh --icons --git'
+alias ll='eza -lh --icons --git --color=auto'
 
 # Detailed listing including hidden files
-alias la='eza -lah --icons --git'
+alias la='eza -lAh --icons --git --color=auto'
 
 # Detailed listing including hidden files by tree
 alias lat='eza -lah --icons --git --tree -L 2 --ignore-glob=".git|.cache|node_modules|.orbstack"'
@@ -43,7 +62,7 @@ alias cat='bat'
 
 alias grep='rg --color=auto'
 alias diff='diff --color=auto'
-alias df='df -h'
+#alias df='df -h'
 
 # =========================================================
 # Navigation
@@ -74,7 +93,23 @@ alias vim='nvim'
 alias glog='PAGER="less -F -X" git log'  
 # -F quit if one screen, -X no clear on exit
 alias gadog='PAGER="less -F -X" git log --all --decorate --oneline --graph'
-alias dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
+alias gh.='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
+
+alias gh="git"
+alias gst="git status"
+alias ga="git add"
+alias gaa="git add --all"
+alias gcmsg="git commit -m"
+alias gco="git checkout"
+alias gcb="git checkout -b"
+alias gb="git branch"
+alias gl="git pull"
+alias gp="git push"
+alias gd="git diff"
+
+# 漂亮的圖表化 Git Log
+alias glog="git log --oneline --decorate --graph --color"
+
 
 # =========================================================
 # Video
@@ -117,4 +152,27 @@ alias killpro="ps -ef | fzf --header '選擇要強制結束的進程' --height 4
 alias findbig="fd --type f --size +50M | fzf --preview 'bat --color=always --line-range :100 {}' --header '選中的檔案路徑會直接印在命令列'"
 # 找目前目錄下大於 1GB 的檔案並線上檢視
 alias findbigger="fd --type f --size +1G | fzf --preview 'bat --color=always --line-range :100 {}' --header '選中的檔案路徑會直接印在命令列'"
+
+
+# 快速重新載入 Shell 設定（免重開終端機）
+alias reload="source ~/.zshrc"  # Bash 使用者請改為 ~/.bashrc
+
+# 清理終端機畫面
+alias c="clear"
+
+# 便捷查看公開 IP
+alias myip="curl icanhazip.com"
+
+# 快速編輯設定檔（請自行替換成 code, vim, nano 等編輯器）
+alias zshconfig="cot ~/.zshrc"
+alias bashconfig="cot ~/.bashrc"
+
+#Docker
+alias d="docker"
+alias dps="docker ps --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'"
+alias dimages="docker images"
+alias ddc="docker-compose"
+
+
+
 
