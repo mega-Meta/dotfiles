@@ -6,6 +6,7 @@
     "lzhgus/tap"
   ],
   "trustedformulae": [
-    "jandedobbeleer/oh-my-posh/oh-my-posh"
+    "jandedobbeleer/oh-my-posh/oh-my-posh",
+    "zackelia/formulae/bclm"
   ]
 }
