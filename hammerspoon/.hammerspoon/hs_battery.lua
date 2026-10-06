@@ -1,3 +1,7 @@
+-- hs_battery.lua
+-- 電池充電狀態監控，健康度守護模組
+-- lowBatteryPercentage/topBatteryPercentage 可另外設定於引用主程式，設定不同閥值
+--
 -- 將監聽器變數設為全域（Global），防止被系統自動回收
 batteryWatcher = nil 
 sleepWatcher = nil
