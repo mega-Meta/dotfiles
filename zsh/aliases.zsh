@@ -1,7 +1,13 @@
 # 快速返回上層
-alias ..="cd .."
-alias ...="cd ../.."
-alias ....="cd ../../.."
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias ......='cd ../../../../..'
+
+alias -- -='cd -'
+alias home='cd "${HOME}"'
+alias root='cd /'
 
 # 讓 ls 預設帶有顏色、人性化檔案大小與詳細資訊
 #alias ls="ls --color=auto"
@@ -35,7 +41,10 @@ alias lat='eza -lah --icons --git --tree -L 2 --ignore-glob=".git|.cache|node_mo
 alias lt='lat' #'eza -lah --icons --git --tree -L 2'
 
 # Tree view
-alias tree='eza --tree --icons'
+alias tree='eza --tree --icons -L 1'
+alias ld='ls -ld -- */ 2>/dev/null'
+alias tree2='eza -lah --icons --git --tree -L 2'
+alias tree3='eza -lah --icons --git --tree -L 3'
 
 # Reuse ls completions for eza (avoids defining a separate completion function)
 # Only run compdef if we are currently inside Zsh
@@ -68,8 +77,6 @@ alias diff='diff --color=auto'
 # Navigation
 # =========================================================
 
-alias -- -='cd -'  # -- prevents - being parsed as a flag; cd - jumps to previous directory
-
 lf() { # zsh follow lf navigation
     tmp=$(mktemp)
     command lf -last-dir-path="$tmp" "$@"
@@ -78,6 +85,45 @@ lf() { # zsh follow lf navigation
         rm -f "$tmp"
         [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
     fi
+}
+
+mkcd() {
+    if [ "$#" -ne 1 ]; then
+        printf 'Usage: mkcd <directory>\n' >&2
+        return 2
+    fi
+
+    mkdir -p -- "$1" && cd -- "$1"
+}
+
+croot() {
+    local root
+
+    root="$(git rev-parse --show-toplevel 2>/dev/null)" || {
+        printf 'Not inside a Git repository.\n' >&2
+        return 1
+    }
+
+    cd -- "$root"
+}
+
+up() {
+    local levels="${1:-1}"
+    local destination=""
+
+    case "$levels" in
+        ''|*[!0-9]*)
+            printf 'Usage: up [positive-integer]\n' >&2
+            return 2
+            ;;
+    esac
+
+    while [ "$levels" -gt 0 ]; do
+        destination="../${destination}"
+        levels=$((levels - 1))
+    done
+
+    cd -- "$destination"
 }
 
 # =========================================================
@@ -95,17 +141,18 @@ alias glog='PAGER="less -F -X" git log'
 alias gadog='PAGER="less -F -X" git log --all --decorate --oneline --graph'
 alias gh.='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
 
-alias gh="git"
-alias gst="git status"
-alias ga="git add"
-alias gaa="git add --all"
-alias gcmsg="git commit -m"
-alias gco="git checkout"
-alias gcb="git checkout -b"
-alias gb="git branch"
-alias gl="git pull"
-alias gp="git push"
-alias gd="git diff"
+#alias gh="git"
+alias gh="git status"
+alias gs='git status --short --branch'
+alias ghad="git add"
+alias ghaa="git add --all"
+alias ghcm="git commit -m"
+alias ghco="git checkout"
+alias ghcb="git checkout -b"
+alias ghbr="git branch"
+alias ghpl="git pull"
+alias ghph="git push"
+alias ghdf="git diff"
 
 # 漂亮的圖表化 Git Log
 alias glog="git log --oneline --decorate --graph --color"
@@ -159,6 +206,33 @@ alias reload="source ~/.zshrc"  # Bash 使用者請改為 ~/.bashrc
 
 # 清理終端機畫面
 alias c="clear"
+alias cls='clear; ls'
+alias reload='source "${HOME}/.${SHELL##*/}rc"'
+alias path='printf "%s\n" "${PATH//:/$'\''\n'\''}"'
+alias now='date "+%Y-%m-%d %H:%M:%S"'
+alias week='date "+%V"'
+alias shellinfo='printf "Shell: %s\nVersion: %s\n" "$SHELL" "$BASH_VERSION"'
+
+reload-sh() {
+    local config
+
+    case "${SHELL##*/}" in
+        bash) config="${HOME}/.bashrc" ;;
+        zsh)  config="${HOME}/.zshrc" ;;
+        *)
+            printf 'Unsupported shell: %s\n' "$SHELL" >&2
+            return 1
+            ;;
+    esac
+
+    if [ ! -f "$config" ]; then
+        printf 'Configuration file not found: %s\n' "$config" >&2
+        return 1
+    fi
+
+    # shellcheck disable=SC1090
+    source "$config"
+}
 
 # 便捷查看公開 IP
 alias myip="curl icanhazip.com"
@@ -172,6 +246,79 @@ alias d="docker"
 alias dps="docker ps --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'"
 alias dimages="docker images"
 alias ddc="docker-compose"
+
+# Return success when a command is installed.
+has() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+# Operating-system detection.
+case "$(uname -s)" in
+    Darwin)
+        export AWESOME_ALIAS_OS="macos"
+        ;;
+    Linux)
+        export AWESOME_ALIAS_OS="linux"
+        ;;
+    *)
+        export AWESOME_ALIAS_OS="other"
+        ;;
+esac
+
+extract() {
+    if [ "$#" -ne 1 ]; then
+        printf 'Usage: extract <archive>\n' >&2
+        return 2
+    fi
+
+    local archive="$1"
+
+    if [ ! -f "$archive" ]; then
+        printf 'File not found: %s\n' "$archive" >&2
+        return 1
+    fi
+
+    case "$archive" in
+        *.tar.bz2|*.tbz2) tar -xjf "$archive" ;;
+        *.tar.gz|*.tgz)   tar -xzf "$archive" ;;
+        *.tar.xz|*.txz)   tar -xJf "$archive" ;;
+        *.tar.zst)        tar --zstd -xf "$archive" ;;
+        *.tar)            tar -xf "$archive" ;;
+        *.bz2)            bunzip2 "$archive" ;;
+        *.gz)             gunzip "$archive" ;;
+        *.xz)             unxz "$archive" ;;
+        *.zip)            unzip "$archive" ;;
+        *.7z)             7z x "$archive" ;;
+        *.rar)            unrar x "$archive" ;;
+        *)
+            printf 'Unsupported archive format: %s\n' "$archive" >&2
+            return 1
+            ;;
+    esac
+}
+
+#Calculator and Encoding
+alias calc='bc -l'
+alias sha256='sha256sum'
+alias b64e='base64'
+alias urlencode='python3 -c "import sys,urllib.parse; print(urllib.parse.quote(sys.stdin.read().strip()))"'
+sha256file() {
+    if [ "$#" -ne 1 ]; then
+        printf 'Usage: sha256file <file>\n' >&2
+        return 2
+    fi
+
+    if has sha256sum; then
+        sha256sum -- "$1"
+    elif has shasum; then
+        shasum -a 256 -- "$1"
+    else
+        printf 'Neither sha256sum nor shasum is installed.\n' >&2
+        return 1
+    fi
+}
+
+
 
 
 
