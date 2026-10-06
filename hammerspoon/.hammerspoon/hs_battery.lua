@@ -4,6 +4,8 @@ sleepWatcher = nil
 batteryTimer = nil  
 
 local lowBatteryAlertTriggered = false
+-- 💡 新增：追蹤上一次真正成功寫入硬體的值
+local lastWrittenValue = nil 
 
 ---------------------------------------------------------
 -- 🛡️ 防呆機制：檢查 init.lua 是否有設定全域變數，若無則套用預設值
@@ -37,13 +39,20 @@ if not bclmPath then
 end
 
 ---------------------------------------------------------
--- ⚙️ 封裝：安全的 bclm 寫入函式
+-- ⚙️ 封裝：智慧型 bclm 寫入函式（具備防重複寫入鎖）
 ---------------------------------------------------------
 local function writeBclmValue(targetValue, reason)
     if not bclmPath then return end
+    
+    -- 💡 如果目標值和上一次寫入的值一樣，不重寫！
+    if lastWrittenValue == targetValue then 
+        return 
+    end
+
     hs.task.new("/usr/bin/sudo", function(exitCode, stdOut, stdErr)
         if exitCode == 0 then
             print(string.format("🔋 電池守護者 [%s]：成功將硬體充電限制修改為 %s%%。", reason, targetValue))
+            lastWrittenValue = targetValue -- 記錄成功狀態
         else
             print("BCLM 寫入錯誤: " .. (stdErr or "未知原因"))
         end
@@ -51,7 +60,7 @@ local function writeBclmValue(targetValue, reason)
 end
 
 ---------------------------------------------------------
--- ⚡ 核心充電控制邏輯（供狀態改變與開機時呼叫）
+-- ⚡ 核心充電控制邏輯
 ---------------------------------------------------------
 local function enforceBatteryLimits()
     local percentage = hs.battery.percentage()
@@ -79,12 +88,9 @@ local function enforceBatteryLimits()
     end
 
     -- 狀況 B：【提早 10% 預警防禦】與狀況 C（拔電恢復 100%）
-    -- 這裡主要處理即時的狀態切換，定時巡邏會做智慧比對
     local earlyTriggerPercentage = topBatteryPercentage - 10
     if percentage >= earlyTriggerPercentage and powerSource == "AC Power" then
-        -- 先行呼叫一次，後續由定時巡邏智慧守護
         writeBclmValue(topBatteryPercentage, "電量達預警區")
-    --以下拔除電源線恢復100暫不執行
     --elseif powerSource == "Battery Power" then
     --    writeBclmValue(100, "拔除電源線")
     end
@@ -100,16 +106,18 @@ sleepWatcher = hs.caffeinate.watcher.new(function(eventType)
     local powerSource = hs.battery.powerSource()
     if eventType == hs.caffeinate.watcher.systemWillSleep then
         if powerSource == "AC Power" then
+            lastWrittenValue = nil -- 休眠前清除緩存，強制允許寫入一次
             writeBclmValue(topBatteryPercentage, "系統即將休眠")
         end
     elseif eventType == hs.caffeinate.watcher.systemDidWake or eventType == hs.caffeinate.watcher.screensDidWake then
+        lastWrittenValue = nil -- 喚醒時清除緩存，強制重新檢查
         enforceBatteryLimits()
     end
 end)
 sleepWatcher:start()
 
 ---------------------------------------------------------
--- 🔄 🚀【智慧型 60 秒定時巡邏：先讀再寫，防重複點火】
+-- 🔄 🚀【智慧型 60 秒定時巡邏：先讀再寫，雙重保險】
 ---------------------------------------------------------
 batteryTimer = hs.timer.doEvery(60, function()
     local percentage = hs.battery.percentage()
@@ -118,26 +126,24 @@ batteryTimer = hs.timer.doEvery(60, function()
 
     if not percentage or not bclmPath then return end
 
-    -- 只有在「插著電」且「電量已達提早 10% 預警區」才需要巡邏
     if percentage >= (topBatteryPercentage - 10) and powerSource == "AC Power" then
         
-        -- 🔍 第一步：先執行 bclm read 讀取目前的硬體值
+        -- 🔍 第一步：先執行 bclm read 讀取目前的實際硬體值
         hs.task.new(bclmPath, function(exitCode, stdOut, stdErr)
             if exitCode == 0 and stdOut then
-                -- 清除多餘的換行與空白，取得乾淨的數字字串 (例如 "100" 或 "85")
                 local currentHardwareValue = string.gsub(stdOut, "%s+", "")
                 
-                -- 🔍 第二步：智慧比對！
-                -- 如果硬體值被系統洗掉了（不等於我們設定的上限值），才重新寫入！
+                -- 🔍 第二步：智慧比對！如果發現硬體值跟設定的上限不同
                 if currentHardwareValue ~= tostring(topBatteryPercentage) then
                     print(string.format("⚠️ 偵測到硬體值異動！目前為 %s%%，與設定值 %d%% 不符，發動修正...", currentHardwareValue, topBatteryPercentage))
+                    lastWrittenValue = nil -- 清除鎖，允許定時器修正
                     writeBclmValue(topBatteryPercentage, "定時巡邏修正")
                 end
             end
-        end, {"read"}):start() -- 這裡呼叫 read 不需要 sudo 權限，速度極快且不傷系統
+        end, {"read"}):start()
         
-        -- 🚨【硬體晶片卡死完全捕獲】高於目標值 2% 且持續顯示正在充電
-        if percentage >= (topBatteryPercentage + 2) and isCharging then
+        -- 🚨【硬體晶片卡死完全捕獲】高於目標值 3% 且持續顯示正在充電
+        if percentage >= (topBatteryPercentage + 3) and isCharging then
             local sound = hs.sound.getByName("Blow")
             if sound then sound:play() end
             hs.speech.new():speak("電池已超出限制，請重新插拔電源線")
