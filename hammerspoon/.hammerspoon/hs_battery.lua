@@ -39,25 +39,38 @@ if not bclmPath then
 end
 
 ---------------------------------------------------------
--- ⚙️ 封裝：智慧型 bclm 寫入函式（具備防重複寫入鎖）
+-- ⚙️ 封裝：智慧型 bclm 寫入函式（即時讀取硬體值比對，防重複寫入）
 ---------------------------------------------------------
 local function writeBclmValue(targetValue, reason)
     if not bclmPath then return end
     
-    -- 💡 如果目標值和上一次寫入的值一樣，不重寫！
-    if lastWrittenValue == targetValue then 
-        return 
-    end
-
-    hs.task.new("/usr/bin/sudo", function(exitCode, stdOut, stdErr)
-        if exitCode == 0 then
-            print(string.format("🔋 電池守護者 [%s]：成功將硬體充電限制修改為 %s%%。", reason, targetValue))
-            lastWrittenValue = targetValue -- 記錄成功狀態
+    -- 🔍 第一步：先非同步讀取目前 SMC 硬體內真正的限制值（免 sudo，速度極快）
+    hs.task.new(bclmPath, function(readExitCode, readStdOut, readStdErr)
+        if readExitCode == 0 and readStdOut then
+            -- 清除多餘的換行與空白，取得乾淨的硬體現值
+            local currentHardwareValue = string.gsub(readStdOut, "%s+", "")
+            
+            -- 💡 第二步：即時智慧比對！
+            -- 如果目前硬體值已經等於目標值，直接攔截不重寫，避免重複點火
+            if currentHardwareValue == tostring(targetValue) then
+                -- print(string.format("ℹ️ 電池守護者 [%s]：硬體值已是 %s%%，無需重複寫入。", reason, targetValue))
+                return 
+            end
+            
+            -- 💡 第三步：數值有異動，才真正發動寫入
+            hs.task.new("/usr/bin/sudo", function(writeExitCode, writeStdOut, writeStdErr)
+                if writeExitCode == 0 then
+                    print(string.format("🔋 電池守護者 [%s]：偵測到異動（原為 %s%%），已成功將硬體充電限制修改為 %s%%。", reason, currentHardwareValue, targetValue))
+                else
+                    print("BCLM 寫入錯誤: " .. (writeStdErr or "未知原因"))
+                end
+            end, {bclmPath, "write", tostring(targetValue)}):start()
         else
-            print("BCLM 寫入錯誤: " .. (stdErr or "未知原因"))
+            print("BCLM 讀取錯誤: " .. (readStdErr or "未知原因"))
         end
-    end, {bclmPath, "write", tostring(targetValue)}):start()
+    end, {"read"}):start()
 end
+
 
 ---------------------------------------------------------
 -- ⚡ 核心充電控制邏輯
