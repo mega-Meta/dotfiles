@@ -5,3 +5,7 @@ status_indicators = "symbols"
 
 [ui.toast]
 delivery = "herdr"
+
+[theme]
+name = "solarized"
+auto_switch = false
