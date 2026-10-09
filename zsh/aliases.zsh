@@ -136,7 +136,7 @@ alias vim='nvim'
 # Git
 # =========================================================
 
-alias glog='PAGER="less -F -X" git log'  
+alias glog='PAGER="less -F -X" git log'
 # -F quit if one screen, -X no clear on exit
 alias gadog='PAGER="less -F -X" git log --all --decorate --oneline --graph'
 alias gh.='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
@@ -197,8 +197,33 @@ alias killpro="ps -ef | fzf --header '選擇要強制結束的進程' --height 4
 
 # 找目前目錄下大於 50MB 的檔案並線上檢視
 alias findbig="fd --type f --size +50M | fzf --preview 'bat --color=always --line-range :100 {}' --header '選中的檔案路徑會直接印在命令列'"
+
 # 找目前目錄下大於 1GB 的檔案並線上檢視
 alias findbigger="fd --type f --size +1G | fzf --preview 'bat --color=always --line-range :100 {}' --header '選中的檔案路徑會直接印在命令列'"
+
+#alias findbig="fd --type f --size +50M --exec ls -lh {} \; | fzf --delimiter='(?<=\d:\d\d) ' --with-nth=2 --preview 'bat --color=always --line-range :100 {2}' --header '選中的檔案路徑會直接印在命令列' | awk '{print substr(\$0, index(\$0, \$2))}'"
+
+#alias findbig="fd --type f --size +50M --exec stat -f '%z%t%N' {} \; | awk -F'\t' '{ size=\$1; gb=1024*1024*1024; mb=1024*1024; if (size>=gb) printf \"%dG\t%s\n\", size/gb, \$2; else printf \"%dM\t%s\n\", size/mb, \$2 }' | fzf --delimiter='\t' --nth=1.. --preview 'bat --color=always --line-range :100 {2}' --header '提示：輸入 [5-9][0-9]M 找 50-99M；輸入 [1-9]G 找 1G以上' | cut -f2-"
+
+
+findgt() {
+    # 如果使用者沒有輸入參數（直接打 findbig），預設帶入 50M
+    local size="${1:-50M}"
+
+    # 執行 fd 並呼叫 stat 格式化輸出檔案大小與路徑 (以 Tab 鍵分隔)
+    fd --type f --size "+$size" --exec stat -f '%z%t%N' {} \; 2>/dev/null |
+    awk -F'\t' '{
+        size=$1; gb=1024*1024*1024; mb=1024*1024;
+        if (size>=gb) printf "%.1fG\t%s\n", size/gb, $2;
+        else printf "%.0fM\t%s\n", size/mb, $2
+    }' |
+    fzf --delimiter='\t' \
+        --with-nth=1.. \
+        --preview 'bat --color=always --line-range :100 {2}' \
+        --header "目前篩選大於 $size 的檔案。選中的檔案路徑會直接印在命令列" \
+        | cut -f2-
+}
+
 
 
 # 快速重新載入 Shell 設定（免重開終端機）
